@@ -22,6 +22,7 @@ export default {
             ],
             indexSelect: 0,
             isShowModalCreate: false,
+            rerender: true
         }
     },
     async created() {
@@ -54,16 +55,21 @@ export default {
         closeCreateModal() {
             this.isShowModalCreate = false
         },
-        refreshPage() {
-            location.reload()
+        async refreshPage() {
+            let res = await getDataContactList()
+            this.listContacts = res.data;
+            this.rerender = false
+            this.$nextTick(() => {
+                this.rerender = true
+            })
         }
     }
 }
 </script>
 
 <template>
-    <HeaderCom />
     <div id="ContactBook">
+        <HeaderCom />
         <CreateModal v-if="this.isShowModalCreate" @emitCloseCreateModal="closeCreateModal()" />
         <div class="content">
             <Inputsearch />
@@ -74,8 +80,8 @@ export default {
                         <i class="fa-solid fa-address-book"></i>
                     </p>
 
-                    <ContactList @emitIndex="(index) => { handleEmit(index) }" :list="this.listContacts"
-                        :indexSelect="this.indexSelect" />
+                    <ContactList v-if="this.rerender" @emitIndex="(index) => { handleEmit(index) }"
+                        :list="this.listContacts" :indexSelect="this.indexSelect" />
                     <div class="list-btn">
                         <button class="refresh" @click="refreshPage()">
                             <i class="fa-solid fa-arrow-rotate-right"></i>

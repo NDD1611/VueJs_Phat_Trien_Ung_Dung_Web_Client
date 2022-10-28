@@ -15,6 +15,7 @@
     background-color: black;
     height: 50px;
     color: #fff;
+    padding: 0 10px;
 
     span {
         margin-left: 20px;
